@@ -1,6 +1,4 @@
-﻿
-
-public class TreinandoReflection
+﻿public class TreinandoReflection
 {
     static void Main(string[] args)
     {
@@ -20,24 +18,28 @@ public class TreinandoReflection
         {
             Nome = "Petisco",
             Especie = "Cachorro",
-            Idade = 4
+            DataNascimento = new DateTime(2019, 08, 29)
         });
 
         ManipulandoObjetos.PropriedadesEMetodos(pessoa);
 
-        var metodo = tipoPessoa.GetMethod("AdicionarPet");
-        metodo.Invoke(pessoa, new object[]{new Pet()
+        var metodo1 = tipoPessoa.GetMethod("AdicionarPet");
+        metodo1.Invoke(pessoa, new object[]{new Pet()
         {
             Nome = "Toquinho",
             Especie = "Cachorro",
-            Idade = 14
+            DataNascimento = new DateTime(2009,11,29)
         }
     });
         var metodo2 = tipoPessoa.GetMethod("QtdPetsVivos");
-        Console.WriteLine(metodo2.Invoke(pessoa, null));
+        Console.WriteLine($"Número de Pets vivos: {metodo2.Invoke(pessoa, null)}");
         var metodo3 = tipoPessoa.GetMethod("PetMorreu");
-        metodo3.Invoke(pessoa, new object[] { "Toquinho", "Cachorro", 14 });
-        Console.WriteLine(metodo2.Invoke(pessoa, null));
+        metodo3.Invoke(pessoa, new object[] { "Toquinho", "Cachorro", new DateTime(2009, 11, 29) });
+        Console.WriteLine($"Número de Pets vivos: {metodo2.Invoke(pessoa, null)}");
+        var metodo4 = tipoPessoa.GetMethod("NovoFilho");
+        Console.WriteLine($"Número de filhos: {metodo4.Invoke(pessoa, null)}");
+        var metodo5 = tipoPessoa.GetMethod("Idade");
+        Console.WriteLine($"Idade: {metodo5.Invoke(pessoa, null)}");
     }
 }
 
@@ -65,10 +67,7 @@ public static class ManipulandoObjetos
         }
     }
 
-    public static T CriarNovaInstancia<T>()
-    {
-        return Activator.CreateInstance<T>();
-    }
+    public static T CriarNovaInstancia<T>() => Activator.CreateInstance<T>();
 }
 
 public class Pessoa
@@ -98,23 +97,15 @@ public class Pessoa
         }
     }
 
-    public int Idade()
-    {
-        return (int)Math.Floor((DateTime.Now - DataNascimento).TotalDays / 365);
-    }
+    public int Idade() => (int)Math.Floor((DateTime.Now - DataNascimento).TotalDays / 365);
 
-    public int NovoFilho()
-    {
-        return this.NumeroFilhos += 1;
-    }
-    public void AdicionarPet(Pet pet)
-    {
-        Pets.Add(pet);
-    }
+    public int NovoFilho() => ++this.NumeroFilhos;
 
-    public void PetMorreu(string nome, string especie, int idade)
+    public void AdicionarPet(Pet pet) => Pets.Add(pet);
+
+    public void PetMorreu(string nome, string especie, DateTime dataNascimento)
     {
-        Pet? pet = Pets.FirstOrDefault(x => x.Nome == nome && x.Especie == especie && x.Idade == idade);
+        Pet? pet = Pets.FirstOrDefault(x => x.Nome == nome && x.Especie == especie && x.DataNascimento == dataNascimento);
         if(pet != null)
         {
             pet.Vivo = false;
@@ -123,16 +114,13 @@ public class Pessoa
         return;
     }
 
-    public int QtdPetsVivos()
-    {
-        return Pets.Count(x => x.Vivo == true);
-    }
+    public int QtdPetsVivos() => Pets.Count(x => x.Vivo == true);
 }
 
 public class Pet
 {
     public string Nome { get; set; }
     public string Especie { get; set; }
-    public int Idade { get; set; }
+    public DateTime DataNascimento { get; set; }
     public bool Vivo { get; set; } = true;
 }
