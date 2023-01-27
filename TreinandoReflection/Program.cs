@@ -1,5 +1,4 @@
-﻿
-public class TreinandoReflection
+﻿public class TreinandoReflection
 {
     static void Main(string[] args)
     {
@@ -46,17 +45,17 @@ public static class ManipulandoObjetos
     {
         var tipoObjeto = value.GetType();
         var propriedadesObjeto = tipoObjeto.GetProperties();
-        foreach(var propriedade in propriedadesObjeto)
+        foreach (var propriedade in propriedadesObjeto)
         {
             Console.WriteLine($"{propriedade.Name}: {propriedade.GetValue(value)}");
         }
         Console.WriteLine();
         var metodosObjeto = tipoObjeto.GetMethods();
-        foreach(var metodo in metodosObjeto)
+        foreach (var metodo in metodosObjeto)
         {
             Console.WriteLine($"Método: {metodo.Name}\nTipo do retorno: {metodo.ReturnType.Name}");
             var parametrosMetodo = metodo.GetParameters();
-            foreach(var parametro in parametrosMetodo)
+            foreach (var parametro in parametrosMetodo)
             {
                 Console.WriteLine($"Parâmetro: {parametro.Name}");
             }
@@ -114,7 +113,7 @@ public class Pessoa
     public void PetMorreu(string nome, string especie, int idade)
     {
         Pet? pet = Pets.FirstOrDefault(x => x.Nome == nome && x.Especie == especie && x.Idade == idade);
-        if(pet != null)
+        if (pet != null)
         {
             pet.Vivo = false;
             return;
